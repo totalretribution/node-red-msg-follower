@@ -1,0 +1,37 @@
+<script type="text/javascript" src="resources/@totalretribution/node-red-msg-follower/msg-follower.js"></script>
+
+<script type="text/html" data-template-name="order-test">
+  <div class="form-row">
+    <label for="node-input-name"style="width: 8.5em;"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" style="width: calc(100% - 9em)">
+</div>
+<div class="form-row">
+  <label for="node-input-property1"style="width: 8.5em;"><i class="fa fa-ellipsis-h"></i> Property 1</label>
+  <input type="text" id="node-input-property1" style="width: calc(100% - 9em)"/>
+</div>
+<div class="form-row">
+    <label for="node-input-property2"style="width: 8.5em;"><i class="fa fa-ellipsis-h"></i> Property 2</label>
+    <input type="text" id="node-input-property2" style="width: calc(100% - 9em)"/>
+</div>
+<div class="form-row">
+  <label for="node-input-order" style="width: 8.5em;"><i class="fa fa-ellipsis-h" ></i> Use Order</label>
+  <select type="text" id="node-input-order" style="width: calc(100% - 9em)">
+    <option value="0">Ignore</option>
+    <option value="1">Follow</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-ignore" style="width: 8.5em;"><i class="fa fa-ellipsis-h"></i> Other Messages</label>
+  <select type="text" id="node-input-ignore" style="width: calc(100% - 9em)">
+    <option value="0">Ignore</option>
+    <option value="1">Fail</option>
+  </select>
+</div>
+<div class="form-row node-input-items-container-row">
+    <ol id="node-input-items-container"></ol>
+</div>
+</script>
+
+<script type="text/html" data-help-name="order-test">
+  <p></p>
+</script>
