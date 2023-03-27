@@ -39,11 +39,13 @@ RED.nodes.registerType('msg-follower', {
 
     $("#node-input-items-container").css('min-height', '150px').css('min-width', '550px').css('height', '595px').editableList({
       addItem: function (container, i, opt) {
-        // debugger;
         if (!opt.hasOwnProperty('item')) {  // A User created item.
           opt.item = {};
+          const lastItem = $("#node-input-items-container").editableList('getItemAt',i-1);
+          if (lastItem.hasOwnProperty('item')) { 
+            opt.item = JSON.parse(JSON.stringify(lastItem.item)); //Deep copy object.
+          }
         }
-
         opt.element = container;
         let item = opt.item;
         if (!item.hasOwnProperty('prop1') || item.prop1 == undefined) {
@@ -69,13 +71,13 @@ RED.nodes.registerType('msg-follower', {
         let row1 = $('<div></div>', { style: "display: flex;" }).appendTo(inputRows);
         $('<label/>', { for: "node-input-item-property1-" + i, style: "margin-left: 3px; width:6em;" }).text("Property 1").appendTo(row1);
         let property1Field = $('<input/>', { id: "node-input-item-property1-" + i, class: "node-input-item-property1", type: "text", style: "width: 100%;" }).appendTo(row1)
-        .typedInput({ default: item.idtype, types: ['str', 'num', 'bool', 'jsonata'] });
+        .typedInput({ default: item.prop1type, types: ['str', 'num', 'bool', 'jsonata'] });
         property1Field.typedInput('value', item.prop1);
 
         let row2 = $('<div></div>', { style: "display: flex;" }).appendTo(inputRows);
         $('<label/>', { for: "node-input-item-property2-" + i, style: "margin-left: 3px; width:6em;" }).text("Property 2").appendTo(row2);
         let property2Field = $('<input/>', { id: "node-input-item-property2-" + i, class: "node-input-item-property2", type: "text", style: "width: 100%;" }).appendTo(row2)
-        .typedInput({ default: item.proptype, types: ['str', 'num', 'bool', 'jsonata'] });
+        .typedInput({ default: item.prop2type, types: ['str', 'num', 'bool', 'jsonata'] });
         property2Field.typedInput('value', item.prop2);
 
         let finalspan = $('<span/>', { style: "margin-left: 5px;" }).appendTo(container);
@@ -83,7 +85,6 @@ RED.nodes.registerType('msg-follower', {
         property1Field.typedInput("focus");
       },
       removeItem: function (opt) {
-        debugger;
         let items = $("#node-input-items-container").editableList('items');
         items.each(function (i) {
           $(this).find(".node-input-item-index").html(i + 1);
@@ -110,7 +111,7 @@ RED.nodes.registerType('msg-follower', {
       const prop1Type = item.find(".node-input-item-property1").typedInput('type');
       const prop2 = item.find(".node-input-item-property2").typedInput('value');
       const prop2Type = item.find(".node-input-item-property2").typedInput('type');
-      const itemObj = { prop1: prop1, prop1Type: prop1Type, prop2: prop2, prop2Type: prop2Type };
+      const itemObj = { prop1: prop1, prop1type: prop1Type, prop2: prop2, prop2type: prop2Type };
       node.items.push(itemObj);
     });
   },
