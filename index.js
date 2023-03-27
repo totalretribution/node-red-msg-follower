@@ -19,7 +19,7 @@ module.exports = function (RED) {
 
     node.on('input', function (msg) {
       if (msg.topic == 'reset') {
-        msgBuffer = generateEmptyArray(node.items);
+        msgBuffer = generateBufferArray(node.items);
         msgBufferPos = 0;
         success = undefined;
         node.status({ fill: "yellow", shape: "ring", text: "Awaiting first msg" });
