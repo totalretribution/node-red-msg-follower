@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ~/.nvm/versions/node/v18.15.0/lib/node_modules/node-red/red.js -v",
-    "debug": "node --nolazy ~/.nvm/versions/node/v18.15.0/lib/node_modules/node-red/red.js -v"
+    "start": "node /usr/lib/node_modules/node-red/red.js -v",
+    "debug": "node --nolazy /usr/lib/node_modules/node-red/red.js -v"
   },
   "node-red": {
     "version": ">=2.0.0",

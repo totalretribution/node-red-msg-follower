@@ -6,11 +6,31 @@ module.exports = function (RED) {
 
     node.config = config;
     node.property1 = config.property1;
+    node.property1Type = config.property1Type || "msg";
     node.property2 = config.property2;
+    node.property2Type = config.property2Type || "msg";
     node.items = config.items;
     var numItems = node.items.length;
     node.order = config.order;
     node.ignore = config.ignore;
+
+    if (node.property1Type === 'jsonata') {
+      try {
+        node.property1 = RED.util.prepareJSONataExpression(node.property1, node);
+      } catch (err) {
+        this.error(RED._("Property 1 jsonata error: ", { error: err.message }));
+        return;
+      }
+    }
+
+    if (node.property2Type === 'jsonata') {
+      try {
+        node.property2 = RED.util.prepareJSONataExpression(node.property2, node);
+      } catch (err) {
+        this.error(RED._("Property 2 jsonata error: ", { error: err.message }));
+        return;
+      }
+    }
 
     var msgBuffer = generateBufferArray(node.items);
     var msgBufferPos = 0;
@@ -25,8 +45,8 @@ module.exports = function (RED) {
         node.status({ fill: "yellow", shape: "ring", text: "Awaiting first msg" });
       } else {
         if (success == undefined) {
-          const msgProp1 = msg[node.property1];
-          const msgProp2 = msg[node.property2];
+          const msgProp1 = getProperty(node.property1, node.property1Type, node, msg);
+          const msgProp2 = getProperty(node.property2, node.property2Type, node, msg);
           const itemProp1 = RED.util.evaluateNodeProperty(node.items[msgBufferPos].prop1, node.items[msgBufferPos].prop1type, node)
           const itemProp2 = RED.util.evaluateNodeProperty(node.items[msgBufferPos].prop2, node.items[msgBufferPos].prop2type, node)
           if (node.order == '1') {
@@ -78,6 +98,15 @@ module.exports = function (RED) {
   function generateBufferArray(orgArray) {
     return Array.from(orgArray).map(obj => ({ ...obj, msg: false }));
   }
+
+  function getProperty(theProperty, thePropertytype, theNode, msg) {
+    if (thePropertytype === 'jsonata') {
+        return RED.util.evaluateJSONataExpression(theProperty,msg);
+    } else {
+      return RED.util.evaluateNodeProperty(theProperty,thePropertytype,theNode,msg);
+    }
+}
+
 
   RED.nodes.registerType("msg-follower", MessageFollowerNode);
 }
