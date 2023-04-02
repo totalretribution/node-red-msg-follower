@@ -4,22 +4,22 @@ RED.nodes.registerType('msg-follower', {
   defaults:
   {
     name: { value: "" },
+    property1Type: { value: "msg", required: true },
     property1: {
       value: "topic", required: true,
-      validate: RED.validators.typedInput("propertyType", false)
-    },
-    property1Type: { value: "msg", required: true },
-    property2: {
-      value: "payload", required: true,
-      validate: RED.validators.typedInput("propertyType", false)
+      validate: RED.validators.typedInput("property1Type", false)
     },
     property2Type: { value: "msg", required: true },
+    property2: {
+      value: "payload", required: false,
+    },
     items: { value: [{ prop1: "", prop1type: "str", prop2: "", prop2type: "str" }], required: true },
     order: { value: "1", required: true },
     ignore: { value: "1", required: true }
   },
   inputs: 1,
-  outputs: 1,
+  outputs: 2,
+  outputLabels: ["msg", "success"],
   icon: "file.png",
   label: function () {
     return this.name || "msg-follower";
@@ -27,7 +27,13 @@ RED.nodes.registerType('msg-follower', {
   oneditprepare: function () {
     var node = this;
     $("#node-input-property1").typedInput({ default: this.property1Type || 'msg', types: ['msg', "jsonata"] });
-    $("#node-input-property2").typedInput({ default: this.property2Type || 'msg', types: ['msg', "jsonata"] });
+    $("#node-input-property2").typedInput({
+      default: this.property2Type || 'msg', types: ['msg', "jsonata", {
+        value: "null",
+        label: "null",
+        hasValue: false
+      }]
+    });
 
     if (this.order != "" && this.order != undefined) {
       $("#node-input-order").val(this.order);
@@ -37,7 +43,7 @@ RED.nodes.registerType('msg-follower', {
       $("#node-input-order").change();
     }
 
-    $("#node-input-items-container").css('min-height', '150px').css('min-width', '550px').css('height', '595px').editableList({
+    $("#node-input-items-container").css('min-height', '150px').css('min-width', '550px').css('height', '500px').editableList({
       addItem: function (container, i, opt) {
         if (!opt.hasOwnProperty('item')) {  // A User created item.
           opt.item = {};

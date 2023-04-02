@@ -46,9 +46,21 @@ module.exports = function (RED) {
       } else {
         if (success == undefined) {
           const msgProp1 = getProperty(node.property1, node.property1Type, node, msg);
-          const msgProp2 = getProperty(node.property2, node.property2Type, node, msg);
-          const itemProp1 = RED.util.evaluateNodeProperty(node.items[msgBufferPos].prop1, node.items[msgBufferPos].prop1type, node)
-          const itemProp2 = RED.util.evaluateNodeProperty(node.items[msgBufferPos].prop2, node.items[msgBufferPos].prop2type, node)
+
+          let msgProp2;
+          if (node.property2Type === "null")
+            msgProp2 = null;
+          else
+            msgProp2 = getProperty(node.property2, node.property2Type, node, msg);
+
+          const itemProp1 = RED.util.evaluateNodeProperty(node.items[msgBufferPos].prop1, node.items[msgBufferPos].prop1type, node);
+
+          let itemProp2;
+          if (node.property2Type === "null")
+            itemProp2 = null;
+          else
+            itemProp2 = RED.util.evaluateNodeProperty(node.items[msgBufferPos].prop2, node.items[msgBufferPos].prop2type, node);
+
           if (node.order == '1') {
             if (msgProp1 === itemProp1 && msgProp2 === itemProp2) {
               msgBufferPos++;
@@ -89,7 +101,9 @@ module.exports = function (RED) {
           else {
             node.status({ fill: "red", shape: "ring", text: "fail" });
           }
-          node.send({ payload: success });
+          node.send([msg, { payload: success }]);
+        } else {
+          node.send([msg, { payload: null }]);
         }
       }
     });
@@ -101,11 +115,11 @@ module.exports = function (RED) {
 
   function getProperty(theProperty, thePropertytype, theNode, msg) {
     if (thePropertytype === 'jsonata') {
-        return RED.util.evaluateJSONataExpression(theProperty,msg);
+      return RED.util.evaluateJSONataExpression(theProperty, msg);
     } else {
-      return RED.util.evaluateNodeProperty(theProperty,thePropertytype,theNode,msg);
+      return RED.util.evaluateNodeProperty(theProperty, thePropertytype, theNode, msg);
     }
-}
+  }
 
 
   RED.nodes.registerType("msg-follower", MessageFollowerNode);
